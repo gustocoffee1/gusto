@@ -59,7 +59,7 @@
                         // && $('#seat_name').length < 1 nombre place limité à 1
                     if (this.status() == 'available' && sc.find('selected').length < 6 ) {
 
-                        $counter.text(sc.find('selected').length+1);
+                        // $counter.text(sc.find('selected').length+1);
 
                         // ajoute mot place et bouton reserver
                         if(sc.find('selected').length+1 === 1){
@@ -95,7 +95,7 @@
                         // supprime valeur cachée de la place
                         $('#input_' + this.settings.label).remove();
 
-                        $counter.text(sc.find('selected').length-1);
+                        // $counter.text(sc.find('selected').length-1);
 
                         //supprime bouton reserver
                         if(sc.find('selected').length-1 === 0){
@@ -146,7 +146,7 @@
                         <div class="information"><strong>Montant total : </strong> {{ app.session.get('price') }} €</div>
                         <div id="seat_info" class="information"></div>
 
-                        <div>Selected Seats (<span id="counter">0</span>)</div>
+{#                        <div>Selected Seats (<span id="counter">0</span>)</div>#}
 
                         <div class="list-group list-group-flush">
                             <div id="reserver-bloc">
