@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Informations de réservation{% endblock %}
+
+{% block metadescription %}<meta name="description" content="Retrouvez le détail de votre réservation privée.">{% endblock %}
+
+{% block body %}
+<section class="py-6">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('all_bookings') }}">Liste des réservations</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Détail de la réservation</li>
+        </ol>
+    </nav>
+    <main class="mt-2 mb-5 ">
+        <div class="container">
+            <h1>Réservation n°{{ booking.id }} - Salle {{ booking.name }}</h1>
+            <br>
+            <p><strong>Date d'arrivée : {{ booking.start_date | date('d/m/Y') }} à {{ booking.start_date | date('H:i') }}</strong></p>
+            <p><strong>Date de départ : {{ booking.end_date | date('d/m/Y') }} à {{ booking.end_date | date('H:i') }}</strong></p>
+            <br>
+            <p><strong>Nom :</strong> {{ booking.lastname }}</p>
+            <p><strong>Email :</strong> {{ booking.email }}</p>
+            <p><strong>Téléphone :</strong> {{ booking.phone }}</p>
+            <p><strong>Nom de la salle :</strong> {{ booking.name }} - {{ booking.quantity }} places </p>
+            <p><strong>Prix total :</strong> {{ booking.amount }} €</p>
+            <a href="{{ path('booking_private_delete', {'id': booking.id}) }}" class="btn btn-delete" onclick="return confirm(`Etes vous sur de vouloir annuler votre réservation ?`)">Annuler la réservation</a>
+        </div>
+    </main>
+</section>
+{% endblock %}

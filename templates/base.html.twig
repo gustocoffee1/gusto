@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>{% block title %}Gusto Coffee - Café &amp; Coworking | Espaces pour travailler à Paris{% endblock %}</title>
+
+    {% block metadescription %}<meta name="description" content="Café & Coworking, des espaces de travail inspirants à Paris, ne payez que le temps passé, tout le reste est inclus.">{% endblock %}
+
+    {% block stylesheets %}
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/css/bootstrap.min.css') }}" >
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/css/style.css') }}">
+        <link rel="stylesheet" type="text/plain" href="{{ asset('public/css/style.less') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/css/calendar.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/css/bootstrap-datepicker.min.css') }}" >
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/css/tempusdominus-bootstrap-4.min.css') }}" >
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/css/font-awesome.css') }}" >
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/css/jquery.seat-charts.css') }}" >
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/fullcalendar/core/main.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/fullcalendar/daygrid/main.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/fullcalendar/timegrid/main.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/css/stripe.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('public/css/stripe-form.css') }}">
+    {% endblock %}
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light {% block nav_class %}nav-custom shadow {% endblock %} fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/"><img src="{{ asset('public/img/logo.png') }}" alt="Logo" width="170"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('booking') }}">Réserver une place</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('space_private') }}">Salles de réunion</a>
+                    </li>
+                    {% if app.user %}
+                        <li class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" id="accountDropdownLink">
+                                Mon compte
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledBy="accountDropdownLink">
+                                <a href="{{ path('account_profile') }}" class="dropdown-item">Modifier mon profil</a>
+                                <a href="{{ path('all_bookings') }}" class="dropdown-item">Mes réservations</a>
+                                <div class="dropdown-divider"></div>
+                                <a href="{{ path('security_logout') }}" class="dropdown-item">Déconnexion</a>
+                            </div>
+                        </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('security_registration') }}">Inscription</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('security_login') }}">Connexion</a>
+                    </li>
+                    {% endif %}
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+{% block body %}
+
+{% endblock %}
+
+<footer>
+    <!-- Copyright -->
+    <div class="footer-copyright text-center py-3">
+        Copyright © 2021 Gusto Coffee
+    </div>
+</footer>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="{{ asset('public/js/jquery.min.js') }}"></script>
+    <script src="{{ asset('public/js/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('public/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('public/js/bootstrap-datepicker.min.js') }}"></script>
+    <script src="{{ asset('public/js/moment.js') }}"></script>
+    <script src="{{ asset('public/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+    <script src="{{ asset('public/js/jquery.seat-charts.js') }}"></script>
+    <script src="{{ asset('public/fullcalendar/core/locales/fr.js') }}"></script>
+    <script src="{{ asset('public/fullcalendar/core/main.js') }}"></script>
+    <script src="{{ asset('public/fullcalendar/interaction/main.js') }}"></script>
+    <script src="{{ asset('public/fullcalendar/bootstrap/main.js') }}"></script>
+    <script src="{{ asset('public/fullcalendar/daygrid/main.js') }}"></script>
+    <script src="{{ asset('public/fullcalendar/timegrid/main.js') }}"></script>
+
+{% block javascripts %}
+
+{% endblock %}
+
+</body>
+</html>

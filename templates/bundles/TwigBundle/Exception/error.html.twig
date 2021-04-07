@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Page non trouvée{% endblock %}
+
+{% block body %}
+    <section class="py-6">
+        <div class="container">
+            <h1>{{status_code}}</h1>
+            <p>{{status_text}}</p>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Salles de réunion{% endblock %}
+
+{% block metadescription %}<meta name="description" content="Trouvez la salle de réunion idéale. Sélectionnez parmi notre sélection d'espaces à Paris, pour chaque type de réunions, d'événements et de collaborations créatives.">{% endblock %}
+
+{% block body %}
+    <section class="py-6">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Salles de réunion</li>
+            </ol>
+        </nav>
+        <main class="mt-2 mb-5 pt-1">
+        <div class="row d-flex mb-5 align-items-center">
+            <div class="col-12 text-center">
+                <h1 class="mb-4">Nos salles de réunion</h1>
+            </div>
+            <div class="container">
+            <div class="row">
+                {% for space in spaces %}
+                <div class="col-md-4">
+                    <div class="card bg-custom mb-3">
+                        <img src="{{ asset('img/salle_' ~ space.img ~ '.jpg') }}" alt="Intérieur salle {{ space.img }}" style="height: 170px; width: 100%">
+                        <div class="card-body">
+                            <h3 class="card-title">
+                                Salle {{ space.name }} - {{ space.quantity }} places
+                            </h3>
+                            <p class="card-text"> {{ space.price }}€ / heure</p>
+                            <a href="{{ path('booking_private', {'id': space.id}) }}" class="btn btn-connexion">Reserver</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+            </div>
+        </div>
+    </main>
+</section>
+{% endblock %}

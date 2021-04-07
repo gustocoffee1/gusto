@@ -1,0 +1,190 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+<script>
+
+        $(document).ready(function() {
+
+            $('#incr_qty_1, #incr_qty_2, #incr_qty_3, #incr_qty_4 , #incr_qty_5 ').on('click', function(e) {
+
+                var id = $(this).data('id');
+                var price = $(this).data('price');
+                increment_qty(id,price);
+                e.preventDefault();
+            });
+
+            $('#decr_qty_1, #decr_qty_2, #decr_qty_3, #decr_qty_4, #decr_qty_5').on('click', function(e) {
+
+                var id = $(this).data('id');
+                var price = $(this).data('price');
+                decrement_qty(id,price);
+                e.preventDefault();
+            });
+
+
+        });
+
+        function increment_qty(cart_id, price) {
+            var inputQuantity = $("#input-qty-" + cart_id);
+            var inputPrice = $("#input-price-" + cart_id);
+            var priceItem = price;
+            var totalItemPrice = 0;
+            var newQuantity = parseInt($(inputQuantity).val()) + 1;
+
+            // console.log('id :' + cart_id + ' prix : ' + price + 'quantité :' + newQuantity);
+
+            // change valeur bouton quantité du produit
+            $(inputQuantity).val(newQuantity);
+
+            var total = newQuantity * priceItem;
+            // change valeur bouton prix du produit
+            $(inputPrice).val(total);
+
+            $('#total-item-'+ cart_id).html(total + '€');
+
+            //calcul total
+            $("div[id*='total-item-']").each(function() {
+                var cart_price = $(this).text().replace("€","");
+                totalItemPrice = parseInt(totalItemPrice) + parseInt(cart_price);
+            });
+            $("#total-price").text(totalItemPrice + '€');
+            //change valeur total
+            $("#input-total").val(totalItemPrice);
+
+        }
+
+        function decrement_qty(cart_id, price) {
+            var inputQuantity = $("#input-qty-" + cart_id);
+            var inputPrice = $("#input-price-" + cart_id);
+            var priceItem = price;
+            var totalItemPrice = 0;
+
+            if ($(inputQuantity).val() > 0) {
+
+                var newQuantity = parseInt($(inputQuantity).val()) - 1;
+                console.log('id :' + cart_id + ' prix : ' + price + 'quantité :' + newQuantity);
+                $(inputQuantity).val(newQuantity);
+                var total = newQuantity * priceItem;
+
+                // change valeur bouton prix du produit
+                $(inputPrice).val(total);
+
+                $('#total-item-'+ cart_id).html(total + '€');
+
+                //calcul total
+                $("div[id*='total-item-']").each(function() {
+                    var cart_price = $(this).text().replace("€","");
+                    totalItemPrice = parseInt(totalItemPrice) + parseInt(cart_price);
+                });
+                $("#total-price").text(totalItemPrice + '€');
+                //change valeur total
+                $("#input-total").val(totalItemPrice);
+            }
+        }
+
+</script>
+
+{% endblock %}
+
+{% block title %}Choisissez des services supplémentaires{% endblock %}
+
+{% block metadescription %}<meta name="description" content="Choisissez des services supplémentaires qui comprennent des formules déjeuner, repas, stockage privé en ligne etc.">{% endblock %}
+
+{% block body %}
+<section class="py-6">
+    <main class="mt-2 mb-5 pt-1">
+        <div class="col-12 text-center">
+            <h1 class="mb-4">Services supplémentaires</h1>
+        </div>
+        <div class="container">
+            <form action="{{ path('payment_stripe') }}" name="form_services" method="post" autocomplete="off">
+                {% for formule in formules %}
+                <div class="mb-4">
+                <h3>{{ formule.title }} </h3>
+                <div class="card bg-custom">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <p class="card-text"> {{ formule.description }}</p>
+                            </div>
+                            <div class="col-md-auto service-price">
+                                {{ formule.price }} € / par pers.
+                            </div>
+
+                            <div class="col-md-auto btn-increment-decrement" data-id="{{ formule.id }}" data-price="{{ formule.price }}" id="decr_qty_{{ formule.id }}">
+                                -
+                            </div>
+                            <div class="col-md-1">
+                                <input class="input-quantity" name="qty[]" id="input-qty-{{ formule.id }}" value="0">
+                                <input type="hidden" name="price[]" id="input-price-{{ formule.id }}" value="0">
+                            </div>
+
+                            <div class="col-md-auto btn-increment-decrement" data-id="{{ formule.id }}" data-price="{{ formule.price }}" id="incr_qty_{{ formule.id }}">
+                                +
+                            </div>
+
+
+                            <div class="col-md-1 total-item" id="total-item-{{ formule.id }}">
+                                0 €
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                {% endfor %}
+                <div class="mb-4">
+                    <h3>Supports numériques </h3>
+                    {% for support in supports %}
+                    <div class="mb-4">
+                        <div class="card bg-custom">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <p class="card-text"> {{ support.title }}</p>
+                                    </div>
+                                    <div class="col-md-auto service-price">
+                                        {{ support.price }} € / unité
+                                    </div>
+                                    <div class="col-md-auto btn-increment-decrement" data-id="{{ support.id }}" data-price="{{ support.price }}" id="decr_qty_{{ support.id }}">
+                                        -
+                                    </div>
+                                    <div class="col-md-1">
+                                        <input class="input-quantity" name="qty[]" id="input-qty-{{ support.id }}" value="0">
+                                        <input type="hidden" name="price[]" id="input-price-{{ support.id }}" value="0">
+                                    </div>
+
+                                    <div class="col-md-auto btn-increment-decrement" data-id="{{ support.id }}" data-price="{{ support.price }}" id="incr_qty_{{ support.id }}">
+                                        +
+                                    </div>
+
+                                    <div class="col-md-1 total-item" id="total-item-{{ support.id }}">
+                                        0 €
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-4 div-total">
+                    <div class="card bg-custom">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-7">
+                                    <p class="card-text"> Total</p>
+                                </div>
+                                <div class="col-md-5" id="total-price">
+                                    0 €
+                                </div>
+                                <input type="hidden" name="total-item" id="input-total" value="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" id="continue" class="btn btn-connexion">Continuer</button>
+            </form>
+        </div>
+    </main>
+</section>
+{% endblock %}

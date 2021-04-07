@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block metadescription %}<meta name="description" content="Vous n'avez besoin que d'un compte gratuit pour accéder à tous les services Gusto Coffee.">{% endblock %}
+
+{% block title %}Création d'un nouveau compte{% endblock %}
+
+{% block body %}
+<section class="py-6">
+    <main class="mt-2 mb-5 ">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">&nbsp;</div>
+                <div class="col-md-6">
+
+                    <h1>Créer un compte</h1>
+                    {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                    <button type="submit" class="btn btn-register">Inscription</button>
+                    {{ form_end(form) }}
+                    <br>
+                    <p>En créant un compte, vous acceptez les <a href="{{ path('cgv') }}" >Conditions générales de vente de Gusto Coffee</a>.
+                        Veuillez consulter notre <a href="{{ path('personal_data') }}" > CGU - Mentions légales - Protection des données personnelles</a>
+                    </p>
+                    <p>Vous possédez déjà un compte ? <a href="{{ path('security_login') }}">Identifiez-vous</a></p>
+
+                </div>
+            </div>
+        </div>
+    </main>
+</section>
+
+{% endblock %}

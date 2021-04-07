@@ -1,0 +1,117 @@
+{% extends 'base.html.twig' %}
+{% block nav_class %}nav-default {% endblock %}
+{% block body %}
+
+
+    <header class="masthead">
+        <img class="imghead" src="/img/accueil.jpg" alt="Intérieur du coworking">
+
+        <div class="container h-100">
+            <div class="row h-100 align-items-center">
+                <div class="col-12 text-center">
+                    <h1 class="display-1 title">Gusto Coffee</h1>
+                    <a href="{{ path('booking') }}">
+                        <button type="button" class="btn btn-reserver">RESERVER</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Content -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row d-flex mb-5 align-items-center">
+                <div class="col-md-5">
+                    <h2 class="mb-2">Gusto Coffee <br> Café &amp; Coworking</h2>
+                    <p>Nous proposons des espaces de travail inspirants, une communauté créative et des services professionnels au coeur de Paris. </p>
+                    <p>Venez comme vous êtes et ne payez que le temps passé, tout le reste est inclus.</p>
+                    <p>Gusto Coffee est situé dans l'ancien couvent des Récollets à Paris dans le 10ème arrondissement, à proximité de la gare du Nord.</p>
+                    <p>Il offre un cadre privilégié dans un écrin de verdure, en plein cœur de Paris et dans un lieu historique. Il se compose d’un cloître, d’un jardin et de différents espaces intérieurs dont une ancienne chapelle.</p>
+                </div>
+                <div class="col-md-7">
+                    <img src="/img/coin-cafe.jpg" alt="Décoration de l'intérieur du coin café" width="100%" height="450">
+                </div>
+            </div>
+            <div class="col-12 text-center">
+                <p class="p-home mb-4">'Une heure offerte pour toute réservation de 3h ou plus de 9h à 16h'</p>
+            </div>
+            <div class="row d-flex mb-5 align-items-center">
+                <div class="col-md-5">
+                    <img src="/img/citation-cafe.jpg" alt="Citation sur le café : Un café est toujours une bonne idée" width="100%" height="500">
+                </div>
+
+                <div class="col-md-7">
+                    <h2 class="mb-2">Notre Café</h2>
+                    <p>Nous utilisons uniquement du café bio. Il pousse dans des forêts luxuriantes perchées dans les montagnes plutôt que dans de vastes champs brulés par le soleil.</p>
+                    <p>La forêt fournit l'ombrage idéal aux arbustes de café pour produire leurs fruits tandis que la canopée leur offre un habitat riche de milliers d'insectes. Nos grains bio sont cultivés sans fertilisants ni pes-ticides. Juste sous de très grands arbres.</p>
+                    <p>Nos machines à espresso sont des merveilles d'ingénierie. Mais nos Baristas et nos techniciens brillamment formés sont les vrais magiciens à l'origine de notre café. Température, goût, couleur, arôme, temps d'infusion...</p>
+                    <p>Grâce à leurs vérifications continuelles et à leur expertise, chaque tasse libère les arômes intenses et les notes acidulées caractéristiques de notre assemblage.</p>
+                </div>
+            </div>
+
+            <div class="col-12 text-center">
+                <h2 class="mb-4">Nos Services</h2>
+            </div>
+            <div class="row service">
+                <div class="col-sm bloc-service">
+                    <div class="icon icon-cup"></div>
+                    <p class="text-center">Café</p>
+                </div>
+                <div class="col-sm bloc-service">
+                    <div class="icon icon-wifi"></div>
+                    <p class="text-center">Wifi</p>
+                </div>
+                <div class="col-sm bloc-service">
+                    <div class="icon icon-lounge"></div>
+                    <p class="text-center">Lounge</p>
+                </div>
+            </div>
+
+            <div class="row service">
+                <div class="col-sm bloc-service">
+                    <div class="icon icon-conference"></div>
+                    <p class="text-center">Salle privée</p>
+                </div>
+                <div class="col-sm bloc-service">
+                    <div class="icon icon-terrace"></div>
+                    <p class="text-center">Terrasse</p>
+                </div>
+                <div class="col-sm bloc-service">
+                    <div class="icon icon-frozen"></div>
+                    <p class="text-center">Climatisation</p>
+                </div>
+            </div>
+
+            <div class="row service">
+                <div class="col-sm bloc-service">
+                    <div class="icon icon-cloud"></div>
+                    <p class="text-center">Espace de stockage</p>
+                </div>
+                <div class="col-sm bloc-service">
+                    <div class="icon icon-restaurant"></div>
+                    <p class="text-center">Diner</p>
+                </div>
+                <div class="col-sm bloc-service">
+                    <div class="icon icon-print"></div>
+                    <p class="text-center">Imprimante</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        // $(window).scroll(function(){
+        //     $('nav').toggleClass('scrolled', $(this).scrollTop() > 10);
+        // });
+        $(function () {
+            $(document).scroll(function () {
+                var $nav = $(".fixed-top");
+                $nav.toggleClass('scrolled', $(this).scrollTop() > $nav.height());
+            });
+        });
+    </script>
+{% endblock %}

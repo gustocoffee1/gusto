@@ -1,0 +1,186 @@
+{% extends 'base.html.twig' %}
+
+
+{% block javascripts %}
+<script>
+    var firstSeatLabel = 1;
+
+    $(document).ready(function() {
+        var $cart = $('#selected-seats'),
+            $counter = $('#counter'),
+            $total = $('#total'),
+            sc = $('#seat-map').seatCharts({
+                map: [
+                    '______a[2,A2]a[3,A3]___b[7,B1]b[8,B2]b[9,B3]__c[13,C1]c[14,C2]c[15,C3]___d[20,D2]d[21,D3]',
+                    '_p[95,P5]___a[1,A1]zza[4,A4]__zzz__zzz__d[19,D1]zzd[22,D4]___s[110,S5]',
+                    'p[91,P1]xp[93,P3]___a[5,A5]a[6,A6]___b[10,B4]b[11,B5]b[12,B6]__c[16,C4]c[17,C5]c[18,C6]___d[23,D5]d[24,D6]___s[106,S1]xs[108,S3]',
+                    'p[92,P2]xp[94,P4]________________________s[107,S2]xs[109,S4]',
+                    '______e[26,E2]e[27,E3]___f[31,F1]f[32,F2]f[33,F3]__g[37,G1]g[38,G2]g[39,G3]___h[44,H2]h[45,H3]',
+                    '_____e[25,E1]zze[28,E4]__zzz__zzz__h[43,H1]zzh[46,H4]',
+                    '_q[100,Q5]____e[29,E5]e[30,E6]___f[34,F4]f[35,F5]f[36,F6]__g[40,G4]g[41,G5]g[42,G6]___h[47,H5]h[48,H6]____t[115,T5]',
+                    'q[96,Q1]xq[98,Q3]________________________t[111,T1]xt[113,T3]',
+                    'q[97,Q2]xq[99,Q4]___i[50,I2]i[51,I3]___j[55,J1]j[56,J2]j[57,J3]__k[61,K1]k[62,K2]k[63,K3]___l[68,L2]l[69,L3]___t[112,T2]xt[114,T4]',
+                    '_____i[49,I1]zzi[52,I4]__zzz__zzz__l[67,L1]zzl[70,L4]',
+                    '______i[53,I5]i[54,I6]___j[58,J4]j[59,J5]j[60,J6]__k[64,K4]k[65,K5]k[66,K6]___l[71,L5]l[72,L6]',
+                    '',
+                    'r[101,R1]xr[103,R3]_____m[73,M1]m[74,M2]m[75,M3]__n[79,N1]n[80,N2]n[81,N3]__o[85,O1]o[86,O2]o[87,O3]______u[116,U1]xu[118,U3]',
+                    'r[102,R2]xr[104,R4]_____zzz__zzz__zzz______u[117,U2]xu[119,U4]',
+                    '_r[105,R5]______m[76,M4]m[77,M5]m[78,M6]__n[82,N4]n[83,N5]n[84,N6]__o[88,O4]o[89,O5]o[90,O6]_______u[120,U5]',
+
+                ],
+                seats: {
+
+                    x: {
+                        classes : 'table-vertical',
+                        category: 'Table'
+                    },
+                    z: {
+                        classes : 'table',
+                        category: 'Table'
+                    },
+
+                },
+                naming : {
+                    /*rows: ['A','A','B','B','C','C','G','H','I','J','K','E'],*/
+                    top : false,
+                    getLabel : function (character, row, column) {
+                        return firstSeatLabel++;
+                    },
+                },
+                // legend : {
+                //     node : $('#legend'),
+                //     items : [
+                //         [ 'a', 'available',   'First Class' ],
+                //         [ 'f', 'unavailable', 'Already Booked']
+                //     ]
+                // },
+
+                click: function () {
+                        // && $('#seat_name').length < 1 nombre place limité à 1
+                    if (this.status() == 'available' && sc.find('selected').length < 6 ) {
+
+                        $counter.text(sc.find('selected').length+1);
+
+                        // ajoute mot place et bouton reserver
+                        if(sc.find('selected').length+1 === 1){
+                            $('<div id="seat_name"> <strong>Place : </strong><span id=span_'+ this.settings.label+'> - ' + this.settings.label +'</div>')
+                                .appendTo($('#seat_info'));
+
+                            $("<button type='submit' id='reserver-btn' class='btn btn-connexion'>Reserver</button>")
+                                .appendTo($('#form-reserver-bloc'));
+                        } else {
+                            // $(this.settings.label).appendTo($('#seat_name'));
+
+                            console.log(this.settings.label);
+
+                            $('<span id=span_'+ this.settings.label+'> - '  + this.settings.label +'</span>')
+                                .appendTo($('#seat_name'));
+                        }
+
+
+                        //ajouter l'id du siège
+
+                        //this.settings.id
+                        var id_seat = this.settings.id;
+
+                        $('<input id=input_'+ this.settings.label +' name='+ id_seat + ' type="hidden" value='+ id_seat+'>')
+                            .appendTo($('#form-reserver-bloc'));
+
+                        return 'selected';
+
+                    } else if (this.status() == 'selected') {
+
+                        $('#span_'+ this.settings.label+'').remove();
+
+                        // supprime valeur cachée de la place
+                        $('#input_' + this.settings.label).remove();
+
+                        $counter.text(sc.find('selected').length-1);
+
+                        //supprime bouton reserver
+                        if(sc.find('selected').length-1 === 0){
+                            $('#seat_name').remove();
+                            $('#reserver-btn').remove();
+                        }
+
+                        //seat has been vacated
+                        return 'available';
+
+                    } else if (this.status() == 'unavailable') {
+                        //seat has been already booked
+                        return 'unavailable';
+                    } else {
+                        return this.style();
+                    }
+                }
+            });
+
+
+        {% for seat in seats %}
+            sc.get( '{{ seat.seat_id }}' ).status('unavailable');
+            // sc.get(['1', '4_1', '7_1', '7_2']).status('unavailable');
+        {% endfor %}
+
+    });
+
+
+</script>
+{% endblock %}
+
+{% block title %}Choisissez votre place{% endblock %}
+
+{% block metadescription %}<meta name="description" content="Choisissez votre place parmi nos 120 sièges disponibles. Profitez des avantages de choisir votre place.">{% endblock %}
+
+{% block body %}
+        <div class="d-flex" id="wrapper">
+            <!-- Sidebar -->
+            <div id="sidebar-wrapper">
+                <div class="container-wrapper">
+                    <h1>Récapitulatif</h1>
+                        <div class="information"><strong>Date d'arrivée : </strong> {{ app.session.get('startDate') }}</div>
+                        <div class="information"><strong>Date de départ : </strong> {{ app.session.get('endDate') }}</div>
+                        <div class="information"><strong>Prénom : </strong> {{ app.session.get('firstname') }} </div>
+                        <div class="information"><strong>Nom : </strong> {{ app.session.get('lastname') }} </div>
+                        <div class="information"><strong>Téléphone : </strong> {{ app.session.get('phone') }} </div>
+                        <div class="information"><strong>Adresse mail : </strong> {{ app.session.get('email') }} </div>
+                        <div class="information"><strong>Montant total : </strong> {{ app.session.get('price') }} €</div>
+                        <div id="seat_info" class="information"></div>
+
+                        <div>Selected Seats (<span id="counter">0</span>)</div>
+
+                        <div class="list-group list-group-flush">
+                            <div id="reserver-bloc">
+                                <form action="{{ path('services_form') }}" method="post" id="form-reserver-bloc">
+
+                                </form>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <!-- /#sidebar-wrapper -->
+
+            <!-- Page Content -->
+            <div id="page-content-wrapper">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                        <li class="breadcrumb-item"><a href="{{ path('booking') }}">Réserver un créneau horaire</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Choisir une place</li>
+                    </ol>
+                </nav>
+                <div class="container-fluid container-seat">
+                    <div class="container">
+                        <div class="col-12 text-center">
+                            <h3 class="mb-2 mt-2">Vous pouvez réserver pour un maximum de 6 places</h3>
+                            <div id="seat-map">
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+{% endblock %}

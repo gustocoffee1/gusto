@@ -1,0 +1,415 @@
+{% extends 'base.html.twig' %}
+{% block javascripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+                $.fn.datepicker.dates['fr'] = {
+                    days: ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
+                    daysShort: ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."],
+                    daysMin: ["d", "l", "ma", "me", "j", "v", "s"],
+                    months: ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"],
+                    monthsShort: ["janv.", "févr.", "mars", "avril", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."],
+                    today: "Aujourd'hui",
+                    monthsTitle: "Mois",
+                    clear: "Effacer",
+                    weekStart: 1,
+                    format: "dd/mm/yyyy"
+                };
+
+                var calendarEl = document.getElementById('calendar');
+
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    locale: 'fr',
+                    timeZone: 'local',
+                    plugins: ['interaction', 'dayGrid', 'timeGrid'],
+                    header: {
+                        left: 'title',
+                        center: ' timeGridWeek, today',
+                        right: 'prev,next'
+                    },
+                    allDaySlot: false,
+                    editable: false,
+                    defaultView: 'timeGridWeek',
+                    minTime: '07:00:00',
+                    maxTime: '19:00:00',
+                    selectable: true,
+                    {#events: [#}
+                    {#    {% for booking in bookings %}#}
+                    {#    {#}
+                    {#        start: '{{ booking['start_date'] }}',#}
+                    {#        end: '{{ booking['end_date'] }}',#}
+                    {#        allDay: false,#}
+                    {#        selectable: false#}
+                    {#    },#}
+                    {#    {% endfor %}#}
+                    {#],#}
+                    dateClick: function (i) {
+                        var date;
+                        var hour;
+                        var minute;
+                        var month;
+                        var year;
+
+
+
+                        date = i.date.getDate();
+                        /* 0 à 11 */
+                        month = i.date.getMonth() + 1;
+                        year = i.date.getFullYear();
+                        hour = i.date.getHours();
+                        minute = i.date.getMinutes();
+
+                        $("#form-reserver").prop('id', 'form-reserver-open');
+                        $('#form-reserver-open').draggable();
+
+
+                        $('#startDate').val(((date < 10 ? '0' : '') + date) + "/" + ((month < 10 ? '0' : '') + month) + "/" + year + " " + ((hour < 10 ? '0' : '') + hour) + ":" + ((minute < 10 ? '0' : '') + minute));
+                        $('#endDate').val(((date < 10 ? '0' : '') + date) + "/" + ((month < 10 ? '0' : '') + month) + "/" + year + " " + ((hour + 1 < 10 ? '0' : '') + (hour + 1)) + ":" + ((minute < 10 ? '0' : '') + minute));
+
+                        //simule clic pour forcer la valeur
+                        $('#startDate').click();
+                        $('#endDate').click();
+                        $('#endDate').click();
+                    }
+                });
+
+
+                var startDate;
+                var endDate;
+                var hours;
+                var price;
+
+                $('#startDate, #endDate').datetimepicker({
+                    icons: {
+                        time: 'far fa-clock',
+                    },
+                    locale: "fr",
+                    showClose: true,
+                    language: 'fr',
+                    format: 'DD/MM/YYYY HH:mm',
+                    stepping: 30,
+                    date: null,
+
+                }).on('change.datetimepicker', function () {
+
+
+                    startDate = new Date($('#startDate').val().replace(/(\d+)\/(\d+)\/(\d{4}) (\d+):(\d+)/,'$3-$2-$1 $4:$5'));
+                    // 18/12/2019
+                    // (\d+)\/(\d+)\/(\d{4}) (\d+):(\d+)
+                    // 2019-12-18
+
+                    endDate = new Date($('#endDate').val().replace(/(\d+)\/(\d+)\/(\d{4}) (\d+):(\d+)/,'$3-$2-$1 $4:$5'));
+                    // console.log(endDate);
+
+
+
+
+                    if(startDate && endDate && startDate < endDate){
+                        // 1h en millisecondes
+                        const onehour = 60 * 60 * 1000;
+                        const interval = endDate.getTime() - startDate.getTime();
+
+                        //heure totale
+                        hours = interval / onehour;
+
+
+                        var nbHeure = 0;
+
+                        var startDateCreuse = new Date($('#startDate').val().replace(/(\d+)\/(\d+)\/(\d{4}) (\d+):(\d+)/,'$3-$2-$1 $4:$5'));
+
+                        var endDateCreuse = new Date($('#endDate').val().replace(/(\d+)\/(\d+)\/(\d{4}) (\d+):(\d+)/,'$3-$2-$1 $4:$5'));
+
+
+                        //calcul heure creuses
+                        while(startDateCreuse.getHours() >= '9' && startDateCreuse.getTime() <= endDateCreuse.getTime()) {
+
+                            // si heure est comprise entre les heures creuses : de 9h à 16h alors 3ème heures offerte
+
+                            // 9h et 16h, 16-9h = 7h
+                            //de 8h à 17h = 9h
+                            startTime = startDateCreuse.getHours();
+
+                            endTime = endDateCreuse.getHours();
+
+                            //On verifie que l'heure est dans la plage horaire
+                            //entre 9h et 16H startTime >= 9 && endTime <= 16
+                            if(startTime >= 9 && startTime <= 16 || endTime >= 9 && endTime <= 16) {
+
+                                nbHeure++;
+                            }
+                            //On ajoute une heure
+                            startDateCreuse.setHours(startDateCreuse.getHours() + 1);
+                        }
+
+                        console.log(nbHeure);
+                        nbCreuses = nbHeure - 1;
+
+                        // Si 3 heures creuses ou 6 heures creuses alors heure offerte
+                        if(nbCreuses >= '3' && nbCreuses < '6'){
+                            //heure offerte
+                            price = (hours - 1) * 5;
+                        } else if(nbCreuses >= '6'){
+                            // 2 heures offerte
+                            price = (hours - 2) * 5;
+                        } else {
+                            // sinon prix normal
+                            price = hours * 5;
+                        }
+
+                        // console.log("Heures creuses : " + nbCreuses + " Prix total : " + price);
+
+                        // Si l'heure est sup à 10 alors le prix devient 50
+                        if(hours >= 10){
+                            price = '50';
+                        }
+
+                        $('#price').text(price.toLocaleString('fr-Fr'));
+
+                        // texte promo condition
+                        if(nbCreuses == '2' && endTime <= '16' || nbCreuses == '5' && endTime <= '16'){
+                            $('#textPromo').text('Profitez de 1H OFFERTE en réservant 1 heure supplémentaire').css("padding", "10px");
+                        } else if (nbCreuses >= '3' && nbCreuses <= '4' && endTime <= '16'){
+                            $('#textPromo').text('Une heure OFFERTE ajoutée !').css("padding", "10px");
+                        } else if (nbCreuses >= '6'){
+                            $('#textPromo').text('Deux heures OFFERTES ajoutées !').css("padding", "10px");
+                        } else if (nbCreuses == '2' && endTime > '16'){
+                            $('#textPromo').text('Vous devez être dans la tranche des heures creuses pour bénéficiez de l\'heure offerte !').css("padding", "10px");
+                        } else {
+                            $('#textPromo').text('').css("padding", "0");
+                        }
+                    }
+
+                });
+
+                $('#mini-calendar').datepicker({
+                    language: "fr",
+
+                }).on('changeDate', function (e) {
+                    calendar.gotoDate(e.date);
+                });
+
+
+                calendar.render();
+
+                $('#close').click(function () {
+                    $("#form-reserver-open").prop('id', 'form-reserver');
+                });
+
+                $('.fc-widget-content').click(function() {
+                    $(".bootstrap-datetimepicker-widget.dropdown-menu").css("display","none");
+                    $('#startDate').blur();
+                    $('#endDate').blur();
+                });
+
+            function validateForm(){
+                // error
+                // Se chevauche avec 2 autres réservations
+                // Réservation ne peut pas être supérieur à 600 minutes
+                // Impossible d'ajouter ou modifier réservations dans une période échue
+
+
+                var startDateFull =  startDate.getFullYear() + "-" + ((startDate.getMonth() < 10 ? '0' : '') + (startDate.getMonth()+1)) + "-" + ((startDate.getDate() < 10 ? '0' : '') + startDate.getDate())+ " " + ((startDate.getHours() < 10 ? '0' : '') + startDate.getHours()) + ":" + ((startDate.getMinutes() < 10 ? '0' : '') + startDate.getMinutes());
+
+                var endDateFull =  endDate.getFullYear() + "-" + ((endDate.getMonth() < 10 ? '0' : '') + (endDate.getMonth()+1)) + "-" +  ((endDate.getDate() < 10 ? '0' : '') + endDate.getDate()) + " " + ((endDate.getHours() < 10 ? '0' : '') + endDate.getHours()) + ":" + ((endDate.getMinutes() < 10 ? '0' : '') + endDate.getMinutes());
+
+                var startDateTime = ((startDate.getHours() < 10 ? '0' : '') + startDate.getHours()) + ":" + ((startDate.getMinutes() < 10 ? '0' : '') + startDate.getMinutes());
+                var endDateTime = ((endDate.getHours() < 10 ? '0' : '') + endDate.getHours()) + ":" + ((endDate.getMinutes() < 10 ? '0' : '') + endDate.getMinutes());
+
+                $('.error').remove();
+                //600 minutes = 10h
+                if(hours > 10){
+                    $("#error_list").append('<li class="error">- La réservation ne peut pas être supérieur à 10 heures</li>');
+                    return false;
+                }
+
+                if(endDateFull == startDateFull || hours == "0.5" ){
+                    $("#error_list").append('<li class="error">- La durée minimum de reservation doit être de 1h ou plus</li>');
+                    return false;
+                }
+
+                if(endDateFull < startDateFull ){
+                    $("#error_list").append('<li class="error">- La date de fin doit être supérieure à la date de début </li>');
+                    return false;
+                }
+
+
+                var today = new Date();
+                var date = today.getFullYear()+'-'+((today.getMonth() < 10 ? '0' : '') + (today.getMonth()+1)) + '-' + ((today.getDate() < 10 ? '0' : '') + today.getDate());
+                var time = today.getHours() + ":" + today.getMinutes();
+                var dateTimeNow = date+' '+time;
+
+                // console.log("Date début :" + startDateFull + "Date actuelle :" + dateTimeNow);
+
+                if (startDateFull < dateTimeNow){
+                    $("#error_list").append('<li class="error">- La date de début doit être supérieure à la date actuelle</li>');
+                    return false;
+                }
+
+
+                if (startDateTime < '07:00' || startDateTime > '19:00'){
+                    $("#error_list").append('<li class="error">- La date de début doit être pendant les heures d\'ouverture</li>');
+                    return false;
+                }
+
+                if (endDateTime < '07:00' || endDateTime > '19:00'){
+                    $("#error_list").append('<li class="error">- La date de fin doit être pendant les heures d\'ouverture</li>');
+                    return false;
+                }
+
+                return true;
+            }
+
+                $("#formReserver").submit(function(event) {
+                    event.preventDefault();  // Empêcher le rechargement de la page.
+
+                    var startDateFormValue = ((startDate.getDate() < 10 ? '0' : '') + startDate.getDate()) + "/" + ((startDate.getMonth() < 10 ? '0' : '') + (startDate.getMonth()+1)) + "/" + startDate.getFullYear() + " " + ((startDate.getHours() < 10 ? '0' : '') + startDate.getHours())  + ":" + ((startDate.getMinutes() < 10 ? '0' : '') + startDate.getMinutes());
+                    var endDateFormValue = ((endDate.getDate() < 10 ? '0' : '') + endDate.getDate()) + "/" + ((endDate.getMonth() < 10 ? '0' : '') + (endDate.getMonth()+1)) + "/" + endDate.getFullYear() + " " + ((endDate.getHours() < 10 ? '0' : '') + endDate.getHours())  + ":" + ((endDate.getMinutes() < 10 ? '0' : '') + endDate.getMinutes());
+
+
+                    if(validateForm()) {
+                        $.ajax({
+                            type: "POST",
+                            url: "{{ path('reservation_form') }}",
+                            dataType: 'json',
+                            data: {
+                                'startDate': startDateFormValue,
+                                'endDate': endDateFormValue,
+                                'email': $('#email').val(),
+                                'firstname': $('#firstname').val(),
+                                'lastname': $('#lastname').val(),
+                                'phone': $('#phone').val(),
+                                'society': $('#society').val(),
+                                'price': $('#price').text()
+                            },
+                            success: function (data) {
+                                console.log(data);
+
+                                window.location = '{{ path('booking_seat') }} ';
+                            },
+                            error: function (error) {
+                                console.log(error);
+                            }
+                        });
+                    }
+                });
+            });
+
+    </script>
+{% endblock %}
+
+{% block title %}Réservez votre place de coworking{% endblock %}
+
+{% block metadescription %}<meta name="description" content="Réservez vous-même votre place dans notre salon principal parmi 120 sièges disponibles ! Profitez d'une heure gratuite pour toute réservation de 3h ou plus pendant nos heures creuses de 9h à 16h.">{% endblock %}
+
+{% block body %}
+<section class="py-6">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Accueil</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Réserver une place</li>
+        </ol>
+    </nav>
+    <main class="mt-2 mb-5 pt-1">
+        <div class="col-12 text-center">
+            <h1 class="mb-4">Réserver une place</h1>
+        </div>
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-9" style="background-color: #442624;">&nbsp;
+                        <div class="inform-tarif"><strong>Tarifs de location :</strong></div>
+                        <div class="inform-tarif"><strong>5 € </strong>/ heure</div>
+                        <div class="inform-tarif">Durée minimum de réservation : 1 heure</div>
+
+                        <div class="promo">1 heure <strong>OFFERTE</strong> pour toute réservation d'une durée de 3h ou plus de 9h à 16h</div>
+                        <br>
+                        <div class="inform-tarif"><strong>Pour réserver :</strong></div>
+                        <div class="inform-tarif">Cliquez sur une zone blanche du calendrier</div>
+                    </div>
+                    <div id="mini-calendar"></div>
+                    <div id="wrap">
+                        <div id="calendar"></div>
+                        <div style='clear:both'></div>
+                    </div>
+
+                <div id="form-reserver" class="col-md-5">
+                    <span class="head-reserver">
+                        Nouvelle reservation
+                        <a id="close" class="fas fa-times"></a>
+                    </span>
+
+                    <ul id="error_list"></ul>
+
+                    {% if app.user %}
+                        <form method="post" id="formReserver">
+                            <div class="form-group row">
+                                <label class="required col-sm-4 col-form-label">Du *</label>
+                                <div class="col-sm-8">
+{#                                    <input required type="text" id="startDate" class="form-control">#}
+                                    <input required type="text" class="form-control datetimepicker-input" id="startDate" data-toggle="datetimepicker" data-target="#startDate"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="required col-sm-4 col-form-label">Jusqu'au *</label>
+                                <div class="col-sm-8">
+                                    <input required type="text" class="form-control datetimepicker-input" id="endDate" data-toggle="datetimepicker" data-target="#endDate"/>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="required col-sm-4 col-form-label">Adresse mail*</label>
+                                <div class="col-sm-8">
+                                    <input value="{{ user.email }}" id="email" required type="email" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="required col-sm-4 col-form-label">Prénom*</label>
+                                <div class="col-sm-8">
+                                    <input value="{{ user.firstname }}" id="firstname" required type="text" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="required col-sm-4 col-form-label">Nom*</label>
+                                <div class="col-sm-8">
+                                    <input value="{{ user.lastname }}" id="lastname" required type="text" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="required col-sm-4 col-form-label">Téléphone*</label>
+                                <div class="col-sm-8">
+                                    <input value="{{ user.phone }}" id="phone" required  type="text" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="required col-sm-4 col-form-label">Société</label>
+                                <div class="col-sm-8">
+                                    <input value="{{ user.society }}" id="society" type="text" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="required col-sm-4 col-form-label">Prix</label>
+                                <div class="col-sm-8">
+                                    <span id="price"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <span id="textPromo"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <button type="submit" id="register" class="btn btn-connexion">Enregistrer</button>
+                            </div>
+                        </form>
+                    {% else %}
+                        <span id="identifiez">Pour ajouter une ou plusieurs réservations dans l'agenda, veuillez vous <a href="{{ path('security_login') }}">identifiez</a></span>
+                    {% endif %}
+
+                </div>
+
+            </div>
+        </div>
+    </main>
+</section>
+
+{% endblock %}

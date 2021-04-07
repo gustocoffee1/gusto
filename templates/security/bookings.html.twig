@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes réservations{% endblock %}
+
+{% block metadescription %}<meta name="description" content="Retrouvez le détail de vos réservations, la place, le prix, l'heure de départ et d'arrivée.">{% endblock %}
+
+{% block body %}
+<section class="py-6">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Liste des réservations</li>
+        </ol>
+    </nav>
+    <main class="mt-2 mb-5 pt-1">
+        <div class="container">
+            <div class="col-12 text-center">
+                <h1>Liste des réservations</h1>
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="row">
+            <div class="col-6">
+                <div class="row">
+                    <h2>Espace public</h2>
+                </div>
+                {% for booking in app.user.bookings %}
+                    <div class="row">
+                        <p>Réservation <strong>n° {{ booking.id }}</strong><br>
+                        Du {{ booking.startDate|date('d/m/Y')}} au {{ booking.endDate|date('d/m/Y')}}
+                        </p>
+                        <a href="{{ path('booking_show', {'id': booking.id}) }}" class="btn btn-info">Plus d'informations</a>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <h2>Salles de réunion</h2>
+                </div>
+                {% for booking_private in app.user.bookingPrivates %}
+                    <div class="row">
+                        <p>Réservation <strong>n° {{ booking_private.id }}</strong><br>
+                            Du {{ booking_private.startDate|date('d/m/Y')}} au {{ booking_private.endDate|date('d/m/Y')}}
+                        </p>
+                        <a href="{{ path('booking_private_show', {'id': booking_private.id}) }}" class="btn btn-info">Plus d'informations</a>
+                    </div>
+                {% endfor %}
+            </div>
+            </div>
+        </div>
+
+    </main>
+</section>
+{% endblock %}
