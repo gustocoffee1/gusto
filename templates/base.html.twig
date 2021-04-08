@@ -80,6 +80,12 @@
         © 2021 Gusto Coffee
     </div>
 </footer>
+    <script src="{{ asset('js/cookiechoices.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function(event){
+        cookieChoices.showCookieConsentBar('Ce site utilise des cookies pour vous offrir le meilleur service. En poursuivant votre navigation, vous acceptez l’utilisation des cookies.', 'J’accepte', 'En savoir plus', 'https://gustocoffee.go.yj.fr/personal_data');
+    });
+    </script>
     <script src="https://js.stripe.com/v3/"></script>
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
