@@ -45,6 +45,19 @@ class BookingPrivateRepository extends ServiceEntityRepository
 
     }
 
+    public function findAllServicesPrivate($id)
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = "SELECT s.title, bs.quantity, bs.price
+        FROM booking_private_service bs
+        INNER JOIN service s ON s.id = bs.private_service_id 
+        WHERE bs.quantity > '0' AND bs.booking_private_service_id = $id";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
     // /**
     //  * @return BookingPrivate[] Returns an array of BookingPrivate objects
     //  */

@@ -27,17 +27,25 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Email()
+     * @Assert\Email(message = "L'adresse mail n'est pas valide")
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Type(
+     *     type="alpha",
+     *     message="Le prénom n'est pas valide"
+     * )
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Type(
+     *     type="alpha",
+     *     message="Le nom n'est pas valide"
+     * )
      */
     private $lastname;
 
@@ -48,6 +56,11 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Regex(
+     *      pattern="/^(01|02|03|04|05|06|08)[0-9]{8}/",
+     *      match=true,
+     *      message="Le numéro de téléphone doit commencer par 0 et faire 10 chiffres"
+     * )
      */
     private $phone;
 

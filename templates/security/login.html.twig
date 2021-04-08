@@ -16,6 +16,12 @@
                                 {{ message }}
                             </div>
                         {% endfor %}
+
+                        {% if hasError %}
+                            <div class="alert alert-danger">
+                                Une erreur est survenue, le nom d'utilisateur ou le mot de passe est invalide.
+                            </div>
+                        {% endif %}
                         <h1>Connexion</h1>
                         <form action="{{ path('security_login') }}" method="post">
                             <div class="form-group">

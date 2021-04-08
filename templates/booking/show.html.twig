@@ -24,14 +24,16 @@
             <p><strong>Nom :</strong> {{ booking.lastname }}</p>
             <p><strong>Email :</strong> {{ booking.email }}</p>
             <p><strong>Téléphone :</strong> {{ booking.phone }}</p>
-
-
-                <p><strong>Numéro de place :</strong>
-                    {% for seat in seats %}
-                    - {{ seat.name }}
-                    {% endfor %}
-                </p>
-
+            <p><strong>Numéro de place :</strong>
+                {% for seat in seats %}
+                - {{ seat.name }}
+                {% endfor %}
+            </p>
+            {% for service in services %}
+            <p>
+                <strong>{{ service.title }}</strong> x{{ service.quantity}} - {{ service.price}}€
+            </p>
+            {% endfor %}
             <p><strong>Prix total :</strong> {{ booking.amount }} €</p>
             <a href="{{ path('booking_delete', {'id': booking.id}) }}" class="btn btn-delete" onclick="return confirm(`Etes vous sur de vouloir annuler votre réservation ?`)">Annuler la réservation</a>
         </div>

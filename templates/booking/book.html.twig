@@ -141,7 +141,7 @@
                             startDateCreuse.setHours(startDateCreuse.getHours() + 1);
                         }
 
-                        console.log(nbHeure);
+
                         nbCreuses = nbHeure - 1;
 
                         // Si 3 heures creuses ou 6 heures creuses alors heure offerte
@@ -156,7 +156,6 @@
                             price = hours * 5;
                         }
 
-                        // console.log("Heures creuses : " + nbCreuses + " Prix total : " + price);
 
                         // Si l'heure est sup à 10 alors le prix devient 50
                         if(hours >= 10){
@@ -233,6 +232,7 @@
                 }
 
 
+
                 var today = new Date();
                 var date = today.getFullYear()+'-'+((today.getMonth() < 10 ? '0' : '') + (today.getMonth()+1)) + '-' + ((today.getDate() < 10 ? '0' : '') + today.getDate());
                 var time = today.getHours() + ":" + today.getMinutes();
@@ -255,6 +255,21 @@
                     $("#error_list").append('<li class="error">- La date de fin doit être pendant les heures d\'ouverture</li>');
                     return false;
                 }
+
+                var phone = $('#phone').val();
+                if(isNaN(phone) ) {
+                    $("#error_list").append('<li class="error">- Le numéro de téléphone n\'est pas valide</li>');
+                    return false;
+                }
+
+                var phoneno = /^(01|02|03|04|05|06|08)[0-9]{8}/gi;
+
+                if(!phoneno.test(phone)){
+                    $("#error_list").append('<li class="error">- Le numéro de téléphone doit commencer par 0 et faire 10 chiffres</li>');
+                    return false;
+                }
+
+
 
                 return true;
             }

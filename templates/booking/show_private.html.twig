@@ -24,6 +24,11 @@
             <p><strong>Email :</strong> {{ booking.email }}</p>
             <p><strong>Téléphone :</strong> {{ booking.phone }}</p>
             <p><strong>Nom de la salle :</strong> {{ booking.name }} - {{ booking.quantity }} places </p>
+            {% for service in services %}
+                <p>
+                    <strong>{{ service.title }}</strong> x{{ service.quantity}} - {{ service.price}}€
+                </p>
+            {% endfor %}
             <p><strong>Prix total :</strong> {{ booking.amount }} €</p>
             <a href="{{ path('booking_private_delete', {'id': booking.id}) }}" class="btn btn-delete" onclick="return confirm(`Etes vous sur de vouloir annuler votre réservation ?`)">Annuler la réservation</a>
         </div>

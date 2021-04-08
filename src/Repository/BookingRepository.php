@@ -78,8 +78,22 @@ class BookingRepository extends ServiceEntityRepository
         $stmt->execute();
 
         return $stmt->fetchAll();
-
     }
+
+    public function findAllServices($id)
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = "SELECT s.title, bs.quantity, bs.price
+        FROM booking_service bs
+        INNER JOIN service s ON s.id = bs.service_id 
+        WHERE bs.quantity > '0' AND bs.booking_service_id = $id";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
+
 
 
 

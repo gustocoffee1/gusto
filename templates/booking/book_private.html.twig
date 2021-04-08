@@ -272,6 +272,19 @@
                     return false;
                 }
 
+                var phone = $('#phone').val();
+                if(isNaN(phone) ) {
+                    $("#error_list").append('<li class="error">- Le numéro de téléphone n\'est pas valide</li>');
+                    return false;
+                }
+
+                var phoneno = /^(01|02|03|04|05|06|08)[0-9]{8}/gi;
+
+                if(!phoneno.test(phone)){
+                    $("#error_list").append('<li class="error">- Le numéro de téléphone doit commencer par 0 et faire 10 chiffres</li>');
+                    return false;
+                }
+
                 return true;
             }
 

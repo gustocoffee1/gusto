@@ -455,9 +455,11 @@ class BookingController extends AbstractController
     public function show($id, Booking $booking, BookingRepository $repobook){
         $public = $repobook->findAllForPublic($id);
         $public_seat = $repobook->findAllSeatsPublic($id);
+        $services = $repobook->findAllServices($id);
         return $this->render('booking/show.html.twig', [
             'booking' => $public,
-            'seats' => $public_seat
+            'seats' => $public_seat,
+            'services' => $services
         ]);
     }
 
@@ -469,9 +471,10 @@ class BookingController extends AbstractController
     public function showPrivate($id, BookingPrivate $booking, BookingPrivateRepository $repobook){
 
         $private = $repobook->findAllForPrivate($id);
+        $services = $repobook->findAllServicesPrivate($id);
         return $this->render('booking/show_private.html.twig', [
-            'booking' => $private
-
+            'booking' => $private,
+            'services' => $services
         ]);
     }
 
