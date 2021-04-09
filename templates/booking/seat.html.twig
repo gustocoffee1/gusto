@@ -9,7 +9,7 @@
         var $cart = $('#selected-seats'),
             $counter = $('#counter'),
             $pricetotal = $('#pricetotal'),
-            $price = {{ app.session.get('price') }},
+            $price = '{{ app.session.get('price') }}',
             $total = $('#total'),
             sc = $('#seat-map').seatCharts({
                 map: [
@@ -61,6 +61,7 @@
 
                     if (this.status() == 'available' && sc.find('selected').length < 6 ) {
 
+                        $price = $price.replace(",",".");
                         // prix * nombre de place
                         $counter.text(((sc.find('selected').length+1) * $price) + '€' );
                         $pricetotal.val(((sc.find('selected').length+1) * $price));
@@ -97,8 +98,10 @@
                         $('#input_' + this.settings.label).remove();
 
                         // prix * nombre de place
+                        $price = $price.replace(",",".");
                         $counter.text(((sc.find('selected').length-1)* $price) + '€');
                         $pricetotal.val(((sc.find('selected').length-1) * $price));
+
 
                         //supprime bouton reserver
                         if(sc.find('selected').length-1 === 0){
