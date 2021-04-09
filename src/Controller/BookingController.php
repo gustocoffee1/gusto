@@ -68,8 +68,13 @@ class BookingController extends AbstractController
      * @Route("/booking/services", name="services_form", methods={"GET","POST"})
      */
     public function service(Request $request, ServiceRepository $repo){
-        $seats = $request->request->all();
         $session = $request->getSession();
+
+
+        $pricetotal = $request->get('pricetotal');
+        $session->set('price', $pricetotal);
+        $seats = $request->get('input');
+
         $session->set('seats_id', $seats);
 
         $formules = $repo->findAllFormule();

@@ -8,6 +8,8 @@
     $(document).ready(function() {
         var $cart = $('#selected-seats'),
             $counter = $('#counter'),
+            $pricetotal = $('#pricetotal'),
+            $price = {{ app.session.get('price') }},
             $total = $('#total'),
             sc = $('#seat-map').seatCharts({
                 map: [
@@ -56,11 +58,12 @@
                 // },
 
                 click: function () {
-                        // && $('#seat_name').length < 1 nombre place limité à 1
+
                     if (this.status() == 'available' && sc.find('selected').length < 6 ) {
 
-                        // $counter.text(sc.find('selected').length+1);
-
+                        // prix * nombre de place
+                        $counter.text(((sc.find('selected').length+1) * $price) + '€' );
+                        $pricetotal.val(((sc.find('selected').length+1) * $price));
                         // ajoute mot place et bouton reserver
                         if(sc.find('selected').length+1 === 1){
                             $('<div id="seat_name"> <strong>Place : </strong><span id=span_'+ this.settings.label+'> - ' + this.settings.label +'</div>')
@@ -70,8 +73,6 @@
                                 .appendTo($('#form-reserver-bloc'));
                         } else {
                             // $(this.settings.label).appendTo($('#seat_name'));
-
-                            console.log(this.settings.label);
 
                             $('<span id=span_'+ this.settings.label+'> - '  + this.settings.label +'</span>')
                                 .appendTo($('#seat_name'));
@@ -83,7 +84,7 @@
                         //this.settings.id
                         var id_seat = this.settings.id;
 
-                        $('<input id=input_'+ this.settings.label +' name='+ id_seat + ' type="hidden" value='+ id_seat+'>')
+                        $('<input id=input_'+ this.settings.label +' name=input['+ id_seat + '] type="hidden" value='+ id_seat+'>')
                             .appendTo($('#form-reserver-bloc'));
 
                         return 'selected';
@@ -95,7 +96,9 @@
                         // supprime valeur cachée de la place
                         $('#input_' + this.settings.label).remove();
 
-                        // $counter.text(sc.find('selected').length-1);
+                        // prix * nombre de place
+                        $counter.text(((sc.find('selected').length-1)* $price) + '€');
+                        $pricetotal.val(((sc.find('selected').length-1) * $price));
 
                         //supprime bouton reserver
                         if(sc.find('selected').length-1 === 0){
@@ -143,15 +146,13 @@
                         <div class="information"><strong>Nom : </strong> {{ app.session.get('lastname') }} </div>
                         <div class="information"><strong>Téléphone : </strong> {{ app.session.get('phone') }} </div>
                         <div class="information"><strong>Adresse mail : </strong> {{ app.session.get('email') }} </div>
-                        <div class="information"><strong>Montant total : </strong> {{ app.session.get('price') }} €</div>
+                        <div class="information"><strong>Montant total : </strong> <span id="counter"> </span></div>
                         <div id="seat_info" class="information"></div>
-
-{#                        <div>Selected Seats (<span id="counter">0</span>)</div>#}
 
                         <div class="list-group list-group-flush">
                             <div id="reserver-bloc">
                                 <form action="{{ path('services_form') }}" method="post" id="form-reserver-bloc">
-
+                                    <input id="pricetotal" name="pricetotal" type="hidden" value="">
                                 </form>
                             </div>
                         </div>
