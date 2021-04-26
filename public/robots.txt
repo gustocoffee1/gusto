@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+
+sitemap: https://gustocoffee.go.yj.fr/sitemap.xml
+
